@@ -1,0 +1,12 @@
+<p>You searched for: <strong>{{ query }}</strong></p>
+
+{% if questions %}
+    <p>Found {{ questions|length }} question{{ questions|pluralize }}.</p>
+    <ul>
+        {% for question in questions %}
+        <li>{{ question.question_text }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No questions matched your search criteria.</p>
+{% endif %}
