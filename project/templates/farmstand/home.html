@@ -1,0 +1,9 @@
+{% extends 'farmstand/base.html' %}
+
+{% load staticfiles %}
+
+{% block body_block %}
+
+Welcome to the Farmstand!
+<li><a href="{% url 'products' %}">Click here to view our products.</a></li>
+{% endblock %}

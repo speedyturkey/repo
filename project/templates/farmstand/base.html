@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Farmstand - {% block title %}Welcome!{% endblock %}</title>
+    </head>
+
+    <body>
+        <div>
+            {% block body_block %}{% endblock %}           
+        </div>
+        
+        <hr />
+        
+        <div>
+            {% block footer_block %}
+            <ul>      
+                <li><a href="{% url 'register' %}">Register Here</a></li>               
+            </ul>
+            {% endblock %}
+        </div>
+    </body>
+</html>
