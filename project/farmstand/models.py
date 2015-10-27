@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-class Products(models.Model):
+class Product(models.Model):
     NONE = 'na'
     OUNCE = 'oz'
     PINT = 'pt'
@@ -37,15 +37,16 @@ class Products(models.Model):
 class Season(models.Model):
         
     season = models.CharField(max_length=30)
-    year = models.IntegerField(max_length=4)
+    year = models.IntegerField()
     
     def __unicode__(self):
         return str(self.season) + ' ' + str(self.year)
         
 class Week(models.Model):
     season = models.ForeignKey(Season)
-    number = models.IntegerField(max_length=2)
-
+    number = models.IntegerField()
+    products = models.ManyToManyField(Product)
+    
     def __unicode__(self):
 		return str(self.season.season) + ' ' + str(self.season.year) + ' Week ' + str(self.number)
  
@@ -59,3 +60,7 @@ class UserProfile(models.Model):
     
     def __unicode__(self):
         return self.user.username
+        
+class Week_Product(models.Model):
+    week = models.ForeignKey(Week)
+    product = models.ForeignKey(Product)

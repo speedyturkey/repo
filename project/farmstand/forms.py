@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from farmstand.models import Products, UserProfile
+from farmstand.models import Product, UserProfile
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
