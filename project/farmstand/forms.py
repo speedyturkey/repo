@@ -4,11 +4,14 @@ from farmstand.models import Product, UserProfile
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
-    
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
-        
+        fields = ('username',
+                    'email',
+                    'password'
+        )
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
@@ -17,18 +20,22 @@ class UserProfileForm(forms.ModelForm):
                    'city',
                    'state'
         )
-        
+
 class WeeklyProductForm(forms.ModelForm):
 
-
+    # Create tuple of id and name for all products to pass as choices.
     product_list = tuple(
         [(id, name) for id, name in
             Product.objects.values_list('id', 'name')])
 
     selection = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                             choices=product_list)
-    
+
     class Meta:
         model = Product
-        exclude = ('quantity', 'unit', 'description', 'price')
-        
+        exclude = ('name',
+                    'quantity',
+                    'unit',
+                    'description',
+                    'price'
+        )

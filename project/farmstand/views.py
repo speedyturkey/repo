@@ -9,20 +9,20 @@ from farmstand.forms import UserForm, UserProfileForm, WeeklyProductForm
 
 
 def home(request):
-    
+
     context_dict = []
 
     return render(request, 'farmstand/home.html', context_dict)
-    
+
 def products(request):
 
     product_list = Products.objects.all()
 
     context_dict = {'products': product_list}
-    
+
 
     return render(request, 'farmstand/products.html', context_dict)
-    
+
 def register(request):
 
     # A boolean value for telling the template whether the registration was successful.
@@ -74,7 +74,7 @@ def register(request):
     return render(request,
             'farmstand/register.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
-            
+
 def user_login(request):
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
@@ -114,15 +114,18 @@ def user_login(request):
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
         return render_to_response('farmstand/login.html', {}, context)
-        
+
 def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/farmstand/')
-    
+
 def weekly_products(request):
+    # This view should show an empty form if no weekly_products records exist.
+    # If records do exist, the form should show as pre-populated.
+    # On POST, the records should be overwritten.
     if request.method == 'POST':
         form = WeeklyProductForm(data=request.POST)
         selection = request.POST.getlist('selection')
