@@ -45,7 +45,7 @@ class Season(models.Model):
 class Week(models.Model):
     season = models.ForeignKey(Season)
     number = models.IntegerField()
-    products = models.ManyToManyField(Product)
+    product  = models.ManyToManyField(Product, through='Week_Product')
     
     def __unicode__(self):
 		return str(self.season.season) + ' ' + str(self.season.year) + ' Week ' + str(self.number)

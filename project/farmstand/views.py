@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from farmstand.models import Product
-from farmstand.forms import UserForm, UserProfileForm
+from farmstand.forms import UserForm, UserProfileForm, WeeklyProductForm
 
 
 def home(request):
@@ -121,3 +121,14 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/farmstand/')
+    
+def weekly_products(request):
+    if request.method == 'POST':
+        form = WeeklyProductForm(data=request.POST)
+        selection = request.POST.getlist('selection')
+        print selection
+        return HttpResponseRedirect('/farmstand/')
+    else:
+        form = WeeklyProductForm()
+        context_dict = {'form': form}
+        return render(request, 'farmstand/weekly_products.html', context_dict)

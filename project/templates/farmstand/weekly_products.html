@@ -1,0 +1,17 @@
+# Custom admin view for selecting products by week.
+# Show multi select containing all active products.
+# Selections get passed to a list.
+# A week_product record is created for each element in the list, associated with the week.
+{% extends 'farmstand/base.html' %}
+{% block body_block %}
+<form id="weekly_products" method="post" action="/farmstand/weekly_products/">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            {% endfor %}
+
+            <input type="submit" value="submit" />
+</form>
+{% endblock %}

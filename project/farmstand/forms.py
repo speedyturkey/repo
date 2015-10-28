@@ -17,3 +17,18 @@ class UserProfileForm(forms.ModelForm):
                    'city',
                    'state'
         )
+        
+class WeeklyProductForm(forms.ModelForm):
+
+
+    product_list = tuple(
+        [(id, name) for id, name in
+            Product.objects.values_list('id', 'name')])
+
+    selection = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                            choices=product_list)
+    
+    class Meta:
+        model = Product
+        exclude = ('quantity', 'unit', 'description', 'price')
+        
