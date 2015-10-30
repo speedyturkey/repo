@@ -1,6 +1,7 @@
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
+SETTINGS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', SETTINGS_PATH)
 
 import django
 django.setup()
@@ -34,9 +35,9 @@ def add_week(season_id, number):
     # If w does not exist:
 
 def populate():
-    min_season = Season.objects.all().aggregate(Min('id'))
-    season = Season.objects.annotate(min_season=Min('id'))
-    min_season = season[0].min_season
+    #min_season = Season.objects.all().aggregate(Min('id'))
+    season = Season.objects.annotate(mins=Min('id'))[0].mins
+
 
     product_list = [
         ('Apple', 1, 'na', .5),
