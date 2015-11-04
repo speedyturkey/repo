@@ -53,6 +53,7 @@ class Season(CustomModel):
 class Week(CustomModel):
     season = models.ForeignKey(Season)
     number = models.IntegerField()
+    #start_date = models.DateField()
     product  = models.ManyToManyField(Product, through='Week_Product')
 
     class Meta:
@@ -76,6 +77,8 @@ class Week_Product(CustomModel):
     week = models.ForeignKey(Week)
     product = models.ForeignKey(Product)
 
+    def __unicode__(self):
+        return str(self.product.name) + ' ' + str(self.week.season.season) + ' ' + str(self.week.season.year) + ' Week ' + str(self.week.number)
 class Order(CustomModel):
     user = models.ForeignKey(User)
     week = models.ForeignKey(Week)

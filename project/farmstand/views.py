@@ -4,9 +4,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from farmstand.models import Product
-from farmstand.forms import UserForm, UserProfileForm, WeeklyProductForm
-
+from django.forms import inlineformset_factory
+from farmstand.models import (Product,
+                            Week,
+                            Week_Product,
+                            Season
+)
+from farmstand.forms import (UserForm,
+                            UserProfileForm,
+                            WeeklyProductForm,
+                            Week_SelectorForm
+)
 
 def home(request):
 
@@ -128,10 +136,42 @@ def weekly_products(request):
     # On POST, the records should be overwritten.
     if request.method == 'POST':
         form = WeeklyProductForm(data=request.POST)
-        selection = request.POST.getlist('selection')
-        print selection
+        selection_set = request.POST.getlist('selection')
+        w = Week.objects.get(pk=8)
+        # For each item in selection, create
+        # record in  week_product table.
+        existing = [p for p in w.week_product_set.all().values_list('product_id', flat=True)]
+        for selection in selection_set:
+            p = Product.objects.get(pk=selection)
+            wp = Week_Product.objects.get_or_create(
+                product=p,week=w
+                )
+        for item in existing:
+            if unicode(item) not in selection_set:
+                p = Product.objects.get(pk=item)
+                wp = Week_Product.objects.get_or_create(
+                    product=p,week=w
+                    )
+                Week_Product.objects.filter(id=wp[0].id).delete()
         return HttpResponseRedirect('/farmstand/')
     else:
-        form = WeeklyProductForm()
+        # Assume week_id = 8
+        # Get set of products associated with that week
+        # from Week_Product
+        week = Week.objects.get(pk=8)
+        initial = {'selection':[p for p in week.week_product_set.all().values_list('product_id', flat=True)]}
+        form = WeeklyProductForm(initial=initial)
         context_dict = {'form': form}
         return render(request, 'farmstand/weekly_products.html', context_dict)
+
+def season_select(request):
+    if request.GET.getlist('selection'):
+        form = Week_SelectorForm
+        context_dict = {'form': form}
+        selection = request.GET.getlist('selection')
+        print selection
+    else:
+        season = Season.objects.all()
+        form = Week_SelectorForm
+        context_dict = {'form': form}
+    return render(request, 'farmstand/season_select.html', context_dict)

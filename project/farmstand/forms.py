@@ -1,6 +1,8 @@
+from django.forms import BaseInlineFormSet, inlineformset_factory
 from django import forms
 from django.contrib.auth.models import User
-from farmstand.models import Product, UserProfile
+from farmstand.models import Product, UserProfile, Season, Week
+
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -38,4 +40,15 @@ class WeeklyProductForm(forms.ModelForm):
                     'unit',
                     'description',
                     'price'
+        )
+
+class Week_SelectorForm(forms.ModelForm):
+    week_list = tuple(
+        [(id, number) for id, number in
+            Week.objects.values_list('id', 'number')])
+    week = forms.ChoiceField(choices=week_list)
+    class Meta:
+        model = Week
+        exclude = ('number',
+                    'product'
         )

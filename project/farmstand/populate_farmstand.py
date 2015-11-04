@@ -6,7 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', SETTINGS_PATH)
 import django
 django.setup()
 from django.db.models import Min
-from farmstand.models import Product, Season, Week
+from farmstand.models import Product, Season, Week, Week_Product
 
 def add_product(name, quantity, unit, price):
     p = Product.objects.get_or_create(name=name,
@@ -14,25 +14,32 @@ def add_product(name, quantity, unit, price):
                                         unit=unit,
                                         price=price
                                         )[0]
-    p.save()
     return p
 
 def add_season(season, year):
     s = Season.objects.get_or_create(season=season,
                                         year=year
                                         )[0]
-    s.save()
     return s
 
 def add_week(season_id, number):
     season = Season.objects.get(pk=season_id)
 
     try:
+        # Check to see if object already exists.
         w = Week.objects.get(season_id=season_id,number=number)
     except:
+        # If does not exist, exception is raised.
+        # Create object.
         w = season.week_set.create(number=number)
     return w
-    # If w does not exist:
+
+def add_week_product(week_id, product_id):
+    w = Week.objects.get(pk=week_id)
+    p = Product.objects.get(pk=product_id)
+
+    wp = Week_Product.objects.get_or_create(product=p, week=w)
+    return wp
 
 def populate():
     #min_season = Season.objects.all().aggregate(Min('id'))
@@ -44,7 +51,8 @@ def populate():
         ('Orange', 1, 'na', .5),
         ('Carrot', 1, 'bunch', 3.99),
         ('Maple syrup', 1, 'pint', 7),
-        ('Eggs', 12, 'na', 2.99)
+        ('Eggs', 12, 'na', 2.99),
+        ('Potatoes', 5, 'lb', 4.99)
         ]
 
     season_list = [
@@ -55,11 +63,19 @@ def populate():
         ]
 
     week_list = [
-        (min_season, 1),
-        (min_season, 2),
-        (min_season, 3),
-        (min_season, 4),
-        (min_season, 5)
+        (season, 1),
+        (season, 2),
+        (season, 3),
+        (season, 4),
+        (season, 5)
+        ]
+
+    week_product_list = [
+        (8, 14),
+        (8, 15),
+        (8, 16),
+        (9, 17),
+        (9, 18)
         ]
 
     for product in product_list:
@@ -68,7 +84,11 @@ def populate():
         add_season(season[0], season[1])
     for week in week_list:
         add_week(week[0], week[1])
-
+    for week_product in week_product_list:
+        try:
+            add_week_product(week_product[0], week_product[1])
+        except:
+            print 'wp get_or_create failed'
 # Start execution here!
 if __name__ == '__main__':
     print "Starting Farmstand population script..."
