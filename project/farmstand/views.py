@@ -175,3 +175,11 @@ def season_select(request):
         form = Week_SelectorForm
         context_dict = {'form': form}
     return render(request, 'farmstand/season_select.html', context_dict)
+
+def inline_test(request):
+    season = Season.objects.get(pk=8)
+    WeekInlineFormSet = inlineformset_factory(Season, Week, fields=('season', 'number',))
+    formset = WeekInlineFormSet(instance=1)
+    context_dict = {'formset': formset}
+
+    return render(request, 'farmstand/inline_test.html', context_dict)

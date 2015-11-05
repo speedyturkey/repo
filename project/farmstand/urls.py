@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^weekly_products/$', views.weekly_products, name='weekly_products'),
 	url(r'^season_select/$', views.season_select, name='season_select'),
+	url(r'^inline_test/$', views.inline_test, name='inline_test'),
 )
