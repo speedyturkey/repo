@@ -3,6 +3,9 @@
 <html>
     <head>
         <title>Farmstand - {% block title %}Welcome!{% endblock %}</title>
+        {% load staticfiles %}
+        <script src="{% static "js/jquery.js" %}"></script>
+        <script src="{% static "js/farmstand-jquery.js" %}"></script>
     </head>
 
     <body>

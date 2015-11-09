@@ -42,13 +42,25 @@ class WeeklyProductForm(forms.ModelForm):
                     'price'
         )
 
-class Week_SelectorForm(forms.ModelForm):
-    week_list = tuple(
-        [(id, number) for id, number in
-            Week.objects.values_list('id', 'number')])
-    week = forms.ChoiceField(choices=week_list)
-    class Meta:
-        model = Week
-        exclude = ('number',
-                    'product'
+class WeekSelectorForm(forms.Form):
+
+    season_choices = tuple(
+        [(id, season + ' ' + str(year)) for id, season, year in
+            Season.objects.values_list('id', 'season', 'year')]
         )
+
+    week_choices = tuple(
+        [(id, number) for id, number in
+            Week.objects.values_list('id', 'number')]
+        )
+
+    product_choices = tuple(
+        [(id, name) for id, name in
+            Product.objects.values_list('id', 'name')]
+        )
+
+
+    season = forms.ChoiceField(choices=season_choices)
+    week = forms.ChoiceField(choices=week_choices)
+    product_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                            choices=product_choices)

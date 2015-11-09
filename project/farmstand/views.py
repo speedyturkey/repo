@@ -1,5 +1,5 @@
 from project.settings import *
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
@@ -13,7 +13,7 @@ from farmstand.models import (Product,
 from farmstand.forms import (UserForm,
                             UserProfileForm,
                             WeeklyProductForm,
-                            Week_SelectorForm
+                            WeekSelectorForm
 )
 
 def home(request):
@@ -177,9 +177,15 @@ def season_select(request):
     return render(request, 'farmstand/season_select.html', context_dict)
 
 def inline_test(request):
-    season = Season.objects.get(pk=8)
+    season = Season.objects.all()
     WeekInlineFormSet = inlineformset_factory(Season, Week, fields=('season', 'number',))
-    formset = WeekInlineFormSet(instance=1)
-    context_dict = {'formset': formset}
+    formset = WeekInlineFormSet(queryset=season)
+    form = WeekSelectorForm()
+    context_dict = {'formset': formset, 'form': form}
 
     return render(request, 'farmstand/inline_test.html', context_dict)
+
+def get_season_weeks(request):
+    season = get_object_or_404(pk=request.GET('season', None))
+    resp = ", ".join(Season.Week_set.values_list('number', flat=True))
+    return HttpResponse(resp)
