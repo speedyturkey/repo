@@ -1,8 +1,14 @@
 $(document).ready(function(){
-  console.log({{ form.Season.id }})
-  $('# {{ form.Season.id }} ').change(function(){
-    $('#weeks').load('{% url get_season_weeks %}',
-      {season: $(this).value()});
+
+  //console.log({{ form.Season.id }})
+  $('#id_season').change(function(){
+    console.log($(this).val())
+  });
+  $('#id_season').change(function(){
+    var url = '{% url get_season_weeks 9999 %}'.replace(9999, $(this).val())
+    console.log(url)
+    $('#weeks').load(url);
+    //$('#weeks').load('{% url get_season_weeks %}',{'season': $(this).val()});
       console.log("Get weeks attempted.")
   });
 

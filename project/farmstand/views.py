@@ -185,7 +185,11 @@ def inline_test(request):
 
     return render(request, 'farmstand/inline_test.html', context_dict)
 
-def get_season_weeks(request):
-    season = get_object_or_404(pk=request.GET('season', None))
-    resp = ", ".join(Season.Week_set.values_list('number', flat=True))
+def get_season_weeks(request, season_id):
+    print "foo"
+    print season_id
+    season = get_object_or_404(Season, pk=season_id)
+    print season.week_set.values_list('number', flat=True)
+    resp = ", ".join(str(w) for w in season.week_set.values_list('number', flat=True))
+    print 'resp: ' + resp
     return HttpResponse(resp)
