@@ -49,10 +49,10 @@ class WeekSelectorForm(forms.Form):
             Season.objects.values_list('id', 'season', 'year')]
         )
 
-    week_choices = tuple(
-        [(id, number) for id, number in
-            Week.objects.values_list('id', 'number')]
-        )
+#    week_choices = tuple(
+#        [(id, number) for id, number in
+#            Week.objects.values_list('id', 'number')]
+#        )
 
     product_choices = tuple(
         [(id, name) for id, name in
@@ -61,6 +61,6 @@ class WeekSelectorForm(forms.Form):
 
 
     season = forms.ChoiceField(choices=season_choices)
-    week = forms.ChoiceField(choices=week_choices)
+    week = forms.ChoiceField(choices=[('','--Select a season first--')])
     product_list = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                             choices=product_choices)

@@ -5,9 +5,12 @@ $(document).ready(function(){
     console.log($(this).val())
   });
   $('#id_season').change(function(){
-    var url = '{% url get_season_weeks 9999 %}'.replace(9999, $(this).val())
-    console.log(url)
-    $('#weeks').load(url);
+    var url_id = $(this).val()
+    //var url = '{% url get_season_weeks 9999 %}'.replace(9999, $(this).val())
+      $.get('/farmstand/get_season_weeks/' + url_id, function(data){
+          $('#id_week').html(data);
+      });
+    //$('#weeks').load("home.html");
     //$('#weeks').load('{% url get_season_weeks %}',{'season': $(this).val()});
       console.log("Get weeks attempted.")
   });
