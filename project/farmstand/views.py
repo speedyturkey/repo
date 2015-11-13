@@ -15,6 +15,7 @@ from farmstand.forms import (UserForm,
                             WeeklyProductForm,
                             WeekSelectorForm
 )
+import json
 
 def home(request):
 
@@ -186,10 +187,20 @@ def inline_test(request):
     return render(request, 'farmstand/inline_test.html', context_dict)
 
 def get_season_weeks(request, season_id):
-    print "foo"
-    print season_id
     season = get_object_or_404(Season, pk=season_id)
-    print season.week_set.values_list('number', flat=True)
-    resp = ", ".join(str(w) for w in season.week_set.values_list('number', flat=True))
-    print 'resp: ' + resp
-    return HttpResponse(resp)
+    resp = list(season.week_set.values_list('id', 'number'))
+    data = {}
+    for x in resp:
+        print "{id: %s, number: %s}" % (x[0], x[1])
+        data[x[0]] = x[1]
+        #'id' x[0] 'number' x[1]
+    new_data = []
+    for x in resp:
+        obj = {"id": x[0], "number": x[1]}
+        new_data.append(obj)
+    print(json.dumps(new_data))
+    json_data = json.dumps(data)
+    print 'data: ' + str(data)
+    print 'json_data' + str(json_data)
+    print 'new_data' + str(new_data)
+    return HttpResponse(json_data)
