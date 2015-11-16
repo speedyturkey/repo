@@ -44,21 +44,14 @@ class WeeklyProductForm(forms.ModelForm):
 
 class WeekSelectorForm(forms.Form):
 
-    season_choices = tuple(
-        [(id, season + ' ' + str(year)) for id, season, year in
+    season_choices = [(id, season + ' ' + str(year)) for id, season, year in
             Season.objects.values_list('id', 'season', 'year')]
-        )
-
-#    week_choices = tuple(
-#        [(id, number) for id, number in
-#            Week.objects.values_list('id', 'number')]
-#        )
+    season_choices.insert(0, ('', '--Select a season--'))
 
     product_choices = tuple(
         [(id, name) for id, name in
             Product.objects.values_list('id', 'name')]
         )
-
 
     season = forms.ChoiceField(choices=season_choices)
     week = forms.ChoiceField(choices=[('','--Select a season first--')])

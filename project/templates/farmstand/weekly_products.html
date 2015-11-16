@@ -9,12 +9,11 @@ User should be logged in as an admin to view this page.
 {% block body_block %}
 <form id="weekly_products" method="post" action="/farmstand/weekly_products/">
             {% csrf_token %}
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field.label }}
-                {{ field }}
-            {% endfor %}
+            {{ form.season }}
+            {{ form.week }}
+
+            <p><strong>Available Products</strong>
+            {{ form.product_list }}
 
             <input type="submit" value="submit" />
 </form>

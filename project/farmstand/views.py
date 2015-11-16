@@ -131,14 +131,14 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect('/farmstand/')
 
-def weekly_products(request):
+def deprecated_weekly_products(request):
     # This view should show an empty form if no weekly_products records exist.
     # If records do exist, the form should show as pre-populated.
     # On POST, the records should be overwritten.
     if request.method == 'POST':
         form = WeeklyProductForm(data=request.POST)
         selection_set = request.POST.getlist('selection')
-        w = Week.objects.get(pk=8)
+        w = Week.objects.get(pk=9)
         # For each item in selection, create
         # record in  week_product table.
         existing = [p for p in w.week_product_set.all().values_list('product_id', flat=True)]
@@ -159,7 +159,7 @@ def weekly_products(request):
         # Assume week_id = 8
         # Get set of products associated with that week
         # from Week_Product
-        week = Week.objects.get(pk=8)
+        week = Week.objects.get(pk=9)
         initial = {'selection':[p for p in week.week_product_set.all().values_list('product_id', flat=True)]}
         form = WeeklyProductForm(initial=initial)
         context_dict = {'form': form}
@@ -177,30 +177,47 @@ def season_select(request):
         context_dict = {'form': form}
     return render(request, 'farmstand/season_select.html', context_dict)
 
-def inline_test(request):
-    season = Season.objects.all()
-    WeekInlineFormSet = inlineformset_factory(Season, Week, fields=('season', 'number',))
-    formset = WeekInlineFormSet(queryset=season)
-    form = WeekSelectorForm()
-    context_dict = {'formset': formset, 'form': form}
+def weekly_products(request):
+    if request.method == 'POST':
+        print request.POST.getlist('product_list')
+        print request.POST.get('season')
+        week=request.POST.get('week')
+        selection_set = request.POST.getlist('product_list')
+        w = Week.objects.get(pk=week)
+        # For each item in selection, create
+        # record in  week_product table.
+        existing = [p for p in w.week_product_set.all().values_list('product_id', flat=True)]
+        for selection in selection_set:
+            p = Product.objects.get(pk=selection)
+            wp = Week_Product.objects.get_or_create(
+                product=p,week=w
+                )
+        for item in existing:
+            if unicode(item) not in selection_set:
+                p = Product.objects.get(pk=item)
+                wp = Week_Product.objects.get_or_create(
+                    product=p,week=w
+                    )
+                Week_Product.objects.filter(id=wp[0].id).delete()
+        return HttpResponseRedirect('/farmstand/')
+    else:
 
-    return render(request, 'farmstand/inline_test.html', context_dict)
+        form = WeekSelectorForm()
+        context_dict = {'form': form}
+        return render(request, 'farmstand/weekly_products.html', context_dict)
 
 def get_season_weeks(request, season_id):
     season = get_object_or_404(Season, pk=season_id)
-    resp = list(season.week_set.values_list('id', 'number'))
-    data = {}
-    for x in resp:
-        print "{id: %s, number: %s}" % (x[0], x[1])
-        data[x[0]] = x[1]
-        #'id' x[0] 'number' x[1]
-    new_data = []
-    for x in resp:
-        obj = {"id": x[0], "number": x[1]}
-        new_data.append(obj)
-    print(json.dumps(new_data))
+    week_list = list(season.week_set.values_list('id', 'number'))
+    data = []
+    for week in week_list:
+        obj = {"id": week[0], "number": week[1]}
+        data.append(obj)
     json_data = json.dumps(data)
-    print 'data: ' + str(data)
-    print 'json_data' + str(json_data)
-    print 'new_data' + str(new_data)
     return HttpResponse(json_data)
+
+def get_week_products(request, week_id):
+    week = get_object_or_404(Week, pk=week_id)
+    product_list = list(week.week_product_set.all().values_list('product_id', flat=True))
+    product_list_string = ",".join(str(element) for element in product_list)
+    return HttpResponse(product_list_string)

@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^weekly_products/$', views.weekly_products, name='weekly_products'),
 	url(r'^season_select/$', views.season_select, name='season_select'),
-	url(r'^inline_test/$', views.inline_test, name='inline_test'),
+	#url(r'^inline_test/$', views.inline_test, name='inline_test'),
 	url(r'^get_season_weeks/(?P<season_id>[0-9]+)$', views.get_season_weeks, name='get_season_weeks'),
+	url(r'^get_week_products/(?P<week_id>[0-9]+)$', views.get_week_products, name='get_week_products'),
 )
