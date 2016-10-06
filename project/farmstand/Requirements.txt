@@ -1,3 +1,0 @@
-An inventory and ordering system for the farmstand to run their operations.
-Users will be able to browse products and place orders on a weekly basis, and keep track of their balance.
-Admins will be able to manage available products, set prices, and track orders.
